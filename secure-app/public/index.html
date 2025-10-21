@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Secure Profile — CSRF Protected Demo</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Secure Profile — CSRF Demo</h1>
+    <p class="muted">This page calls a hardened endpoint using CSRF token + Origin checks.</p>
+
+    <section class="card">
+      <h2>1) Login (demo)</h2>
+      <button id="loginBtn">Login</button>
+      <button id="logoutBtn" class="outline">Logout</button>
+      <p id="authStatus" class="muted">Not logged in.</p>
+    </section>
+
+    <section class="card">
+      <h2>2) CSRF Token</h2>
+      <button id="getTokenBtn">Get CSRF Token</button>
+      <pre id="csrfTokenBox" class="code">—</pre>
+    </section>
+
+    <section class="card">
+      <h2>3) Update Profile (Protected)</h2>
+      <form id="updateForm">
+        <label>Email <input type="email" id="email" placeholder="you@example.com" required /></label>
+        <label>Bio <textarea id="bio" rows="3" placeholder="Say something…"></textarea></label>
+        <label>Current Password (for email change) <input type="password" id="pwd" placeholder="demo-password" /></label>
+        <button type="submit" class="primary">Submit Update</button>
+      </form>
+      <pre id="resultBox" class="code"></pre>
+    </section>
+
+    <section class="card">
+      <h2>4) Test Instructions</h2>
+      <ol>
+        <li>Open this app at <code>http://localhost:3000</code>.</li>
+        <li>Click <b>Login</b>, then <b>Get CSRF Token</b>.</li>
+        <li>Submit the form with headers set by the frontend (works).</li>
+        <li>Open the attacker site at <code>http://localhost:4000</code> in another tab — it will try to POST without token / wrong origin and will fail.</li>
+      </ol>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

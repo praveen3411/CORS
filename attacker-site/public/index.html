@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Attacker Page — CSRF Attempt</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:40px;background:#fff5f5}
+    .card{max-width:760px;margin:0 auto;background:white;border:1px solid #f0caca;border-radius:12px;padding:16px}
+    h1{color:#a31212}
+    pre{background:#0f172a;color:#e5e7eb;padding:12px;border-radius:8px;overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Attacker Page — CSRF Attempt</h1>
+    <p>This page will try to update the victim profile on <code>http://localhost:3000</code>.</p>
+    <p>Open <b>http://localhost:3000</b>, click <b>Login</b> first. Then refresh this page to see the result below.</p>
+    <pre id="out">Waiting…</pre>
+  </div>
+
+  <script>
+    async function tryCsrf() {
+      const out = document.getElementById('out');
+      try {
+        // Attempt a forged POST. No CSRF token, wrong Origin.
+        const resp = await fetch('http://localhost:3000/api/profile/update', {
+          method: 'POST',
+          // credentials: 'include', // even if included, SameSite=Lax + origin checks block
+          headers: {
+            'Content-Type': 'application/json'
+            // No X-Requested-With, no X-CSRF-Token
+          },
+          body: JSON.stringify({
+            email: 'attacker@hacker.com',
+            bio: 'Account compromised.'
+          })
+        });
+        const text = await resp.text();
+        out.textContent = `Status: ${resp.status}\nResponse:\n${text}`;
+      } catch (e) {
+        out.textContent = 'Network error: ' + e.message;
+      }
+    }
+    tryCsrf();
+  </script>
+</body>
+</html>
